@@ -1,8 +1,8 @@
 ﻿using ApiEstacionamento.Models;
 
-namespace ApiEstacionamento.Repositorios.Interfaces;
+namespace ApiEstacionamento.Services.Interfaces;
 
-public interface IVeiculoRepositorio
+public interface IVeiculoServices
 {
     Task<List<VeiculoModel>> BuscarPorDataEntrada(DateTime dataentrada);
 
@@ -14,8 +14,7 @@ public interface IVeiculoRepositorio
 
     Task<List<VeiculoModel>> BuscarPorModelo(string modelo);
 
-    Task<VeiculoModel> GravarEntrada(VeiculoModel veiculoentrada);
+    Task<VeiculoModel> GravarEntrada(VeiculoModel veiculo);
 
-    Task<VeiculoModel> GravarSaida(VeiculoModel veiculosaida);
-
+    Task<VeiculoModel> GravarSaida(string placa);
 }

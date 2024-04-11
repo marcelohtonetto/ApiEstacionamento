@@ -1,6 +1,7 @@
 ﻿using ApiEstacionamento.Data;
 using ApiEstacionamento.Models;
 using ApiEstacionamento.Repositorios.Interfaces;
+using ApiEstacionamento.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,17 +11,17 @@ namespace ApiEstacionamento.Controllers
     [ApiController]
     public class PrecoHoraController : ControllerBase
     {
-        private readonly IPrecoHoraRepositorio _PrecoHoraRepositorio;
+        private readonly IPrecoHoraServices _PrecoHoraServices;
 
-        public PrecoHoraController(IPrecoHoraRepositorio precohorarepositorio)
+        public PrecoHoraController(IPrecoHoraServices precoHoraRepositorio)
         {
-            _PrecoHoraRepositorio = precohorarepositorio;
+            _PrecoHoraServices = precoHoraRepositorio;
         }
 
         [HttpGet("BuscaHistoricosDePrecos")]
         public async Task<ActionResult<List<PrecoHoraModel>>> BuscaHistoricosDePrecos()
         {
-           var historicoPrecos = await _PrecoHoraRepositorio.BuscaHistoricosPrecos();
+           var historicoPrecos = await _PrecoHoraServices.BuscaHistoricosPrecos();
 
             if (historicoPrecos is null)
             {
@@ -30,9 +31,9 @@ namespace ApiEstacionamento.Controllers
            return Ok(historicoPrecos);
         }
         [HttpGet("BuscaPrecoAtual")]
-        public async Task<ActionResult<PrecoHoraModel>> BuscaPrecoAtual() 
+        public async Task<ActionResult<decimal>> BuscaPrecoAtual() 
         { 
-            var precoAtual = await _PrecoHoraRepositorio.BuscaPrecoAtual();
+            var precoAtual = await _PrecoHoraServices.BuscaPrecoAtual();
 
             if (precoAtual is null)
             {
@@ -45,7 +46,7 @@ namespace ApiEstacionamento.Controllers
         [HttpPost]
         public async Task<ActionResult<PrecoHoraModel>> NovoPrecoHora([FromBody]PrecoHoraModel precohora)
         {
-            PrecoHoraModel PrecoHora = await _PrecoHoraRepositorio.GravarPrecoHora(precohora);
+            PrecoHoraModel PrecoHora = await _PrecoHoraServices.GravarPrecoHora(precohora);
 
             return  Ok(PrecoHora);
         }

@@ -21,14 +21,7 @@ public class PrecoHoraRepositorio : IPrecoHoraRepositorio
 
     public async Task<List<PrecoHoraModel>> BuscaPrecoAtual()
     {
-        var precoAtual = await _DbContext.PrecoHora.OrderByDescending(x => x.Id).Take(1).ToListAsync();
-
-        if (precoAtual == null) 
-        {
-            throw new Exception("Não existe preço cadsatrado");
-        }
-
-        return  precoAtual;
+        return  await _DbContext.PrecoHora.OrderByDescending(x => x.Id).Take(1).ToListAsync();
     }
 
     public async Task<PrecoHoraModel> GravarPrecoHora(PrecoHoraModel precohoramodel)

@@ -2,6 +2,8 @@
 using ApiEstacionamento.Data;
 using ApiEstacionamento.Repositorios;
 using ApiEstacionamento.Repositorios.Interfaces;
+using ApiEstacionamento.Services;
+using ApiEstacionamento.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiEstacionamento
@@ -25,8 +27,12 @@ namespace ApiEstacionamento
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase"))
                 );
 
+
+            builder.Services.AddScoped<IPrecoHoraServices, PrecoHoraServices>();
+            builder.Services.AddScoped<IVeiculoServices, VeiculoServices>();
             builder.Services.AddScoped<IVeiculoRepositorio, VeiculoRepositorio>();
             builder.Services.AddScoped<IPrecoHoraRepositorio, PrecoHoraRepositorio>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
