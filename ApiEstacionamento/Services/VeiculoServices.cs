@@ -1,9 +1,11 @@
 ﻿
 using ApiEstacionamento.Models;
+using ApiEstacionamento.Models.FilterModel;
 using ApiEstacionamento.Repositorios;
 using ApiEstacionamento.Repositorios.Interfaces;
 using ApiEstacionamento.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 
 namespace ApiEstacionamento.Services;
 
@@ -17,47 +19,89 @@ public class VeiculoServices : IVeiculoServices
         _PrecohoraServices = precoHoraServices;
     }
 
-    public Task<List<VeiculoModel>> BuscarPorDataEntrada(DateTime dataentrada)
+    public async Task<List<VeiculoModel>> BuscarPorDataEntrada(DateTime dataentrada)
     {
-        return _VeiculoRepositorio.BuscarPorDataEntrada(dataentrada);
+        var listaDeVeiculosPorEntrada = await _VeiculoRepositorio.BuscarPorDataEntrada(dataentrada);
+
+        if (listaDeVeiculosPorEntrada is null)
+        {
+            throw new Exception($"Sem registros de veículos.");
+        }
+
+        return listaDeVeiculosPorEntrada;
     }
 
-    public Task<List<VeiculoModel>> BuscarPorDataSaida(DateTime datasaida)
+    public async Task<List<VeiculoModel>> BuscarPorDataSaida(DateTime datasaida)
     {
-        return _VeiculoRepositorio.BuscarPorDataSaida(datasaida);
+        var listaDeVeiculosPorSaida = await _VeiculoRepositorio.BuscarPorDataSaida(datasaida);
+        if (listaDeVeiculosPorSaida is null)
+        {
+            throw new Exception($"Sem registros de veículos.");
+        }
+        return listaDeVeiculosPorSaida;
     }
 
-    public Task<List<VeiculoModel>> BuscarPorModelo(string modelo)
+    public async Task<List<VeiculoModel>> BuscarPorModelo(string modelo)
     {
-        return _VeiculoRepositorio.BuscarPorModelo(modelo);
+        var listaDeVeiculosModelo = await _VeiculoRepositorio.BuscarPorModelo(modelo);
+        if (listaDeVeiculosModelo is null)
+        {
+            throw new Exception($"Sem registros de veículos.");
+        }
+        return listaDeVeiculosModelo;
     }
 
-    public Task<VeiculoModel> BuscarPorPlaca(string placa)
+    public async Task<VeiculoModel> BuscarPorPlaca(string placa)
     {
-        return _VeiculoRepositorio.BuscarPorPlaca(placa);
+        var veiculosPlaca = await _VeiculoRepositorio.BuscarPorPlaca(placa);
+        if (veiculosPlaca is null)
+        {
+            throw new Exception($"Placa {placa} não encontrada");
+        }
+        return veiculosPlaca;
     }
 
-    public Task<List<VeiculoModel>> BuscarTodasEntradasPorPlaca(string placa)
+    public async Task<List<VeiculoModel>> BuscarTodasEntradasPorPlaca(string placa)
     {
-        return _VeiculoRepositorio.BuscarTodasEntradasPorPlaca(placa);
+        var listaEntradaDeVeiculosPlaca = await _VeiculoRepositorio.BuscarTodasEntradasPorPlaca(placa);
+
+        if (listaEntradaDeVeiculosPlaca is null)
+        {
+            throw new Exception($"Sem registros de veículos.");
+        }
+        return listaEntradaDeVeiculosPlaca;
     }
 
-    public Task<VeiculoModel> GravarEntrada(VeiculoModel veiculo)
+    public async Task<List<VeiculoModel>> BuscarVeiculo(VeiculoFilterModel veiculo)
     {
+        var ListaDeVeiculos = await _VeiculoRepositorio.BuscarVeiculo(veiculo);
+        if (ListaDeVeiculos is null)
+        {
+            throw new Exception($"Sem registros de veículos.");
+        }
+        return ListaDeVeiculos;
+    }
+
+    public async Task<VeiculoModel> GravarEntrada(VeiculoModel veiculo)
+    {
+        if (string.IsNullOrWhiteSpace(veiculo.PlacaVeiculo))
+        {
+            throw new Exception($"A placa não pode ser vazia.");
+        }
+        if (string.IsNullOrWhiteSpace(veiculo.Modelo))
+        {
+            throw new Exception($"O modelo não pode ser vazio.");
+        }
+
         veiculo.DataEntrada = DateTime.Now;
-        return _VeiculoRepositorio.GravarEntrada(veiculo);
+        return await _VeiculoRepositorio.GravarEntrada(veiculo);
     }
 
     public async Task<VeiculoModel> GravarSaida(string placa)
     {
         var veiculoSaida = await _VeiculoRepositorio.BuscarPorPlaca(placa);
 
-        if (veiculoSaida == null)
-        {
-            throw new Exception($"Placa {placa} não encontrada");
-        }
-
-        if (veiculoSaida.DataSaida is not null)
+        if (veiculoSaida.PagamentoEfetuado == 1)
         {
             throw new Exception($"O veículo com a placa {placa} não tem sáida.");
         }

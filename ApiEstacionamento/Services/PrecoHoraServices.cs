@@ -16,9 +16,15 @@ public class PrecoHoraServices : IPrecoHoraServices
         _precoHoraRepositorio = precoHoraRepositorio;
     }
 
-    public Task<List<PrecoHoraModel>> BuscaHistoricosPrecos()
+    public async Task<List<PrecoHoraModel>> BuscaHistoricosPrecos()
     {
-        return _precoHoraRepositorio.BuscaHistoricosPrecos();
+        var listaHistoricoPrecos = await _precoHoraRepositorio.BuscaHistoricosPrecos();
+        if (listaHistoricoPrecos is null)
+        {
+            throw new Exception($"Sem registros de preço da hora.");
+        }
+
+        return listaHistoricoPrecos;
     }
 
     public async Task<PrecoHoraModel> BuscaPrecoAtual()
@@ -33,9 +39,18 @@ public class PrecoHoraServices : IPrecoHoraServices
         return precoAtual.FirstOrDefault();
     }
 
-    public Task<PrecoHoraModel> GravarPrecoHora(PrecoHoraModel precohoramodel)
+    public async Task<PrecoHoraModel> GravarPrecoHora(PrecoHoraModel precohoramodel)
     {
-       return _precoHoraRepositorio.GravarPrecoHora(precohoramodel);
+        if (precohoramodel.Preco == 0)
+        {
+            throw new Exception("O preçõ não pode ser 0");
+        }
+        if (precohoramodel.DataPrecoCadastrado == DateTime.MinValue)
+        {
+            throw new Exception("Data de cadastro do valor tem que ser válida.");
+        }
+
+        return await _precoHoraRepositorio.GravarPrecoHora(precohoramodel);
     }
 
 }

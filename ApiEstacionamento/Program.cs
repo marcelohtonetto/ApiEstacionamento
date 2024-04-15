@@ -23,9 +23,9 @@ namespace ApiEstacionamento
 
 
             builder.Services.AddEntityFrameworkSqlServer()
-                .AddDbContext<EstacionamentoDBContext>(
-                options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase"))
-                );
+                             .AddDbContext<EstacionamentoDBContext>(
+                             options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase"))
+                             );
 
 
             builder.Services.AddScoped<IPrecoHoraServices, PrecoHoraServices>();

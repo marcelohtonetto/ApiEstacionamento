@@ -1,9 +1,13 @@
 ﻿using ApiEstacionamento.Data;
 using ApiEstacionamento.Models;
+using ApiEstacionamento.Models.FilterModel;
 using ApiEstacionamento.Repositorios.Interfaces;
 using ApiEstacionamento.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Linq.Expressions;
 using System.Numerics;
 
 namespace ApiEstacionamento.Controllers
@@ -18,81 +22,41 @@ namespace ApiEstacionamento.Controllers
         {
             _VeiculoServices = veiculoservices;
         }
+
         /// <summary>
-        /// Retorna lista de veículos que entraram nessa data
+        /// Busca lista de Veiculo baseados nos campos preenchidos
         /// </summary>
-        /// <param name="dataentrada"></param>
+        /// <param name="veiculo"></param>
         /// <returns></returns>
-        [HttpGet("BuscarPorDataEntrada/{dataentrada}")]
-        public async Task<ActionResult<List<VeiculoModel>>> BuscarPorDataEntrada(DateTime dataentrada)
+        [HttpPost("BuscarListaDeVeiculos")]
+        public async Task<ActionResult<List<VeiculoModel>>> BuscarListaDeVeiculos([FromBody] VeiculoFilterModel veiculo)
         {
-            var listaPorEntrada = await _VeiculoServices.BuscarPorDataEntrada(dataentrada);
-
-            if (listaPorEntrada is null)
+            if (veiculo is null)
             {
-               return NotFound();
+                return BadRequest();
             }
 
-            return Ok(listaPorEntrada);
-        }
+            var listaDeVeiculos = await _VeiculoServices.BuscarVeiculo(veiculo);
 
-        [HttpGet("BuscarPorDataSaida/{datasaida}")]
-        public async Task<ActionResult<List<VeiculoModel>>> BuscarPorDataSaida(DateTime datasaida)
-        {
-            var listaPorSaida = await _VeiculoServices.BuscarPorDataEntrada(datasaida);
-
-            if (listaPorSaida is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(listaPorSaida);
-        }
-
-        [HttpGet("BuscarTodasEntradasPorPlaca/{placa}")]
-        public async Task<ActionResult<List<VeiculoModel>>> BuscarTodasEntradasPorPlaca(string placa)
-        {
-            var todasEntradasPorPlacas = await _VeiculoServices.BuscarTodasEntradasPorPlaca(placa);
-
-            if (todasEntradasPorPlacas is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(todasEntradasPorPlacas);
+            return Ok(listaDeVeiculos);
         }
 
         [HttpGet("BuscarPorPlaca/{placa}")]
-        public async Task<ActionResult<List<VeiculoModel>>> BuscarPorPlaca(string placa)
+        public async Task<ActionResult<VeiculoModel>> BuscarPorPlaca(string placa)
         {
-            var listaPorPlaca = await _VeiculoServices.BuscarPorPlaca(placa);
+            var veiculo = await _VeiculoServices.BuscarPorPlaca(placa);
 
-            if (listaPorPlaca is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(listaPorPlaca);
+            return Ok(veiculo);
         }
-        [HttpGet("BuscarPorModelo/{modelo}")]
-        public async Task<ActionResult<List<VeiculoModel>>> BuscarPorModelo(string modelo)
-        {
-            var listaPorModelo = await _VeiculoServices.BuscarPorPlaca(modelo);
 
-            if (listaPorModelo is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(listaPorModelo);
-        }
         [HttpPost("GravarEntrada")]
         public async Task<ActionResult<List<VeiculoModel>>> GravarEntrada([FromBody] VeiculoModel veiculoentrada)
         {
-            var entradaVeiculo =  await _VeiculoServices.GravarEntrada(veiculoentrada);
+            var entradaVeiculo = await _VeiculoServices.GravarEntrada(veiculoentrada);
 
             return Ok(entradaVeiculo);
         }
+
         [HttpPut("GravarSaida/{placa}")]
         public async Task<ActionResult<List<VeiculoModel>>> GravarSaida(string placa)
         {

@@ -14,9 +14,9 @@ public class PrecoHoraRepositorio : IPrecoHoraRepositorio
     {
         _DbContext = estacionamentodbcontext;     
     }
-    public Task<List<PrecoHoraModel>> BuscaHistoricosPrecos()
+    public async Task<List<PrecoHoraModel>> BuscaHistoricosPrecos()
     {  
-        return  _DbContext.PrecoHora.OrderByDescending(x => x.DataPrecoCadastrado).ToListAsync();     
+        return  await _DbContext.PrecoHora.OrderByDescending(x => x.DataPrecoCadastrado).ToListAsync();     
     }
 
     public async Task<List<PrecoHoraModel>> BuscaPrecoAtual()

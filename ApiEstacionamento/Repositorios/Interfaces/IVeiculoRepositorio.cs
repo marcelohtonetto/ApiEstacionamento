@@ -1,4 +1,5 @@
 ﻿using ApiEstacionamento.Models;
+using ApiEstacionamento.Models.FilterModel;
 
 namespace ApiEstacionamento.Repositorios.Interfaces;
 
@@ -18,4 +19,5 @@ public interface IVeiculoRepositorio
 
     Task<VeiculoModel> GravarSaida(VeiculoModel veiculosaida);
 
+    Task<List<VeiculoModel>> BuscarVeiculo(VeiculoFilterModel veiculo);
 }

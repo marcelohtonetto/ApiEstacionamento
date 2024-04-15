@@ -23,22 +23,13 @@ namespace ApiEstacionamento.Controllers
         {
            var historicoPrecos = await _PrecoHoraServices.BuscaHistoricosPrecos();
 
-            if (historicoPrecos is null)
-            {
-              return  NotFound();
-            }
-
            return Ok(historicoPrecos);
         }
+
         [HttpGet("BuscaPrecoAtual")]
         public async Task<ActionResult<decimal>> BuscaPrecoAtual() 
         { 
             var precoAtual = await _PrecoHoraServices.BuscaPrecoAtual();
-
-            if (precoAtual is null)
-            {
-                return NotFound();
-            }
 
             return  Ok(precoAtual);
         }
