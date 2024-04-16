@@ -34,6 +34,7 @@ public class VeiculoServices : IVeiculoServices
     public async Task<List<VeiculoModel>> BuscarPorDataSaida(DateTime datasaida)
     {
         var listaDeVeiculosPorSaida = await _VeiculoRepositorio.BuscarPorDataSaida(datasaida);
+
         if (listaDeVeiculosPorSaida is null)
         {
             throw new Exception($"Sem registros de veículos.");
@@ -44,6 +45,7 @@ public class VeiculoServices : IVeiculoServices
     public async Task<List<VeiculoModel>> BuscarPorModelo(string modelo)
     {
         var listaDeVeiculosModelo = await _VeiculoRepositorio.BuscarPorModelo(modelo);
+
         if (listaDeVeiculosModelo is null)
         {
             throw new Exception($"Sem registros de veículos.");
@@ -54,6 +56,7 @@ public class VeiculoServices : IVeiculoServices
     public async Task<VeiculoModel> BuscarPorPlaca(string placa)
     {
         var veiculosPlaca = await _VeiculoRepositorio.BuscarPorPlaca(placa);
+
         if (veiculosPlaca is null)
         {
             throw new Exception($"Placa {placa} não encontrada");
@@ -74,7 +77,13 @@ public class VeiculoServices : IVeiculoServices
 
     public async Task<List<VeiculoModel>> BuscarVeiculo(VeiculoFilterModel veiculo)
     {
+        if (veiculo is null)
+        {
+            throw new Exception($"Dados do veículo incorretos.");
+        }
+
         var ListaDeVeiculos = await _VeiculoRepositorio.BuscarVeiculo(veiculo);
+
         if (ListaDeVeiculos is null)
         {
             throw new Exception($"Sem registros de veículos.");

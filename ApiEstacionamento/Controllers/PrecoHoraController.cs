@@ -21,25 +21,19 @@ namespace ApiEstacionamento.Controllers
         [HttpGet("BuscaHistoricosDePrecos")]
         public async Task<ActionResult<List<PrecoHoraModel>>> BuscaHistoricosDePrecos()
         {
-           var historicoPrecos = await _PrecoHoraServices.BuscaHistoricosPrecos();
-
-           return Ok(historicoPrecos);
+           return Ok(await _PrecoHoraServices.BuscaHistoricosPrecos());
         }
 
         [HttpGet("BuscaPrecoAtual")]
         public async Task<ActionResult<decimal>> BuscaPrecoAtual() 
         { 
-            var precoAtual = await _PrecoHoraServices.BuscaPrecoAtual();
-
-            return  Ok(precoAtual);
+            return  Ok(await _PrecoHoraServices.BuscaPrecoAtual());
         }
 
         [HttpPost]
         public async Task<ActionResult<PrecoHoraModel>> NovoPrecoHora([FromBody]PrecoHoraModel precohora)
         {
-            PrecoHoraModel PrecoHora = await _PrecoHoraServices.GravarPrecoHora(precohora);
-
-            return  Ok(PrecoHora);
+            return  Ok(await _PrecoHoraServices.GravarPrecoHora(precohora));
         }
 
     }

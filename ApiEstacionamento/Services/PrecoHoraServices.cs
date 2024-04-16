@@ -19,6 +19,7 @@ public class PrecoHoraServices : IPrecoHoraServices
     public async Task<List<PrecoHoraModel>> BuscaHistoricosPrecos()
     {
         var listaHistoricoPrecos = await _precoHoraRepositorio.BuscaHistoricosPrecos();
+
         if (listaHistoricoPrecos is null)
         {
             throw new Exception($"Sem registros de preço da hora.");

@@ -31,38 +31,25 @@ namespace ApiEstacionamento.Controllers
         [HttpPost("BuscarListaDeVeiculos")]
         public async Task<ActionResult<List<VeiculoModel>>> BuscarListaDeVeiculos([FromBody] VeiculoFilterModel veiculo)
         {
-            if (veiculo is null)
-            {
-                return BadRequest();
-            }
-
-            var listaDeVeiculos = await _VeiculoServices.BuscarVeiculo(veiculo);
-
-            return Ok(listaDeVeiculos);
+            return Ok(await _VeiculoServices.BuscarVeiculo(veiculo));
         }
 
         [HttpGet("BuscarPorPlaca/{placa}")]
         public async Task<ActionResult<VeiculoModel>> BuscarPorPlaca(string placa)
         {
-            var veiculo = await _VeiculoServices.BuscarPorPlaca(placa);
-
-            return Ok(veiculo);
+            return Ok(await _VeiculoServices.BuscarPorPlaca(placa));
         }
 
         [HttpPost("GravarEntrada")]
         public async Task<ActionResult<List<VeiculoModel>>> GravarEntrada([FromBody] VeiculoModel veiculoentrada)
         {
-            var entradaVeiculo = await _VeiculoServices.GravarEntrada(veiculoentrada);
-
-            return Ok(entradaVeiculo);
+            return Ok(await _VeiculoServices.GravarEntrada(veiculoentrada));
         }
 
         [HttpPut("GravarSaida/{placa}")]
         public async Task<ActionResult<List<VeiculoModel>>> GravarSaida(string placa)
         {
-            var saidaVeiculo = await _VeiculoServices.GravarSaida(placa);
-
-            return Ok(saidaVeiculo);
+            return Ok(await _VeiculoServices.GravarSaida(placa));
         }
     }
 }
